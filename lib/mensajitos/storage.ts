@@ -2,6 +2,7 @@ import {
   LAST_MESSAGE_ID_KEY,
   LEGENDARY_COOLDOWN_DAYS,
   LEGENDARY_DATE_KEY,
+  SEEN_MESSAGE_IDS_KEY,
 } from "@/constants/mensajitos";
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
@@ -22,6 +23,37 @@ export function writeLastMessageId(id: number): void {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(LAST_MESSAGE_ID_KEY, String(id));
+  } catch {
+    /* ignore */
+  }
+}
+
+export function readSeenMessageIds(): number[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(SEEN_MESSAGE_IDS_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as unknown;
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter((id): id is number => Number.isInteger(id));
+  } catch {
+    return [];
+  }
+}
+
+export function writeSeenMessageIds(ids: number[]): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(SEEN_MESSAGE_IDS_KEY, JSON.stringify(ids));
+  } catch {
+    /* ignore */
+  }
+}
+
+export function clearSeenMessageIds(): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.removeItem(SEEN_MESSAGE_IDS_KEY);
   } catch {
     /* ignore */
   }

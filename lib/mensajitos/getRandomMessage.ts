@@ -1,22 +1,14 @@
-import type { DailyMessage, MessageRarity } from "@/types";
-import {
-  allMessages,
-  getPoolByRarity,
-} from "@/lib/mensajitos/messages";
+import type { DailyMessage } from "@/types";
+import { allMessages } from "@/lib/mensajitos/messages";
 import {
   canShowLegendaryMessage,
+  clearSeenMessageIds,
+  readSeenMessageIds,
   readLastMessageId,
   writeLastLegendaryDate,
   writeLastMessageId,
+  writeSeenMessageIds,
 } from "@/lib/mensajitos/storage";
-
-const RARITY_WEIGHTS = {
-  common: 0.85,
-  special: 0.12,
-  legendary: 0.03,
-} as const;
-
-const MAX_ATTEMPTS = 24;
 
 export interface GetRandomMessageOptions {
   /** ID a excluir (normalmente el último mostrado). */
@@ -34,42 +26,24 @@ function formatMessageDate(date: Date): string {
   });
 }
 
-/** Decide la rareza según probabilidades y restricción de 7 días. */
-export function rollMessageRarity(legendaryAllowed: boolean): MessageRarity {
-  const roll = Math.random();
-
-  if (legendaryAllowed) {
-    if (roll < RARITY_WEIGHTS.legendary) return "legendary";
-    if (roll < RARITY_WEIGHTS.legendary + RARITY_WEIGHTS.special) {
-      return "special";
-    }
-    return "common";
-  }
-
-  const remaining = RARITY_WEIGHTS.common + RARITY_WEIGHTS.special;
-  const commonThreshold = RARITY_WEIGHTS.common / remaining;
-  return roll < commonThreshold ? "common" : "special";
-}
-
-function pickFromPool(
-  pool: DailyMessage[],
-  excludeId: number | null
-): DailyMessage | null {
-  const candidates =
-    excludeId !== null
-      ? pool.filter((message) => message.id !== excludeId)
-      : pool;
-
-  if (candidates.length === 0) return null;
-
-  return candidates[Math.floor(Math.random() * candidates.length)];
-}
-
 function withDate(message: DailyMessage, now: Date): DailyMessage {
   return {
     ...message,
     date: formatMessageDate(now),
   };
+}
+
+function buildCandidates(
+  excludeId: number | null,
+  legendaryAllowed: boolean,
+  seenIds: number[]
+): DailyMessage[] {
+  const seenSet = new Set(seenIds);
+  return allMessages.filter((message) => {
+    if (message.id === excludeId) return false;
+    if (!legendaryAllowed && message.rarity === "legendary") return false;
+    return !seenSet.has(message.id);
+  });
 }
 
 function persistSelection(message: DailyMessage, now: Date): void {
@@ -80,8 +54,7 @@ function persistSelection(message: DailyMessage, now: Date): void {
 }
 
 /**
- * Selecciona un mensaje aleatorio respetando rarezas, cooldown legendario
- * y sin repetir el último ID mostrado.
+ * Selecciona un mensaje aleatorio evitando repeticiones hasta agotar el ciclo.
  */
 export function getRandomMessage(
   options: GetRandomMessageOptions = {}
@@ -93,25 +66,29 @@ export function getRandomMessage(
   } = options;
 
   const legendaryAllowed = canShowLegendaryMessage(now);
+  let seenIds = readSeenMessageIds();
 
-  for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
-    const rarity = rollMessageRarity(legendaryAllowed);
-    const pool = getPoolByRarity(rarity);
-    const picked = pickFromPool(pool, excludeId);
+  let pool = buildCandidates(excludeId, legendaryAllowed, seenIds);
 
-    if (picked) {
-      const message = withDate(picked, now);
-      if (persist) persistSelection(message, now);
-      return message;
-    }
+  if (pool.length === 0) {
+    clearSeenMessageIds();
+    seenIds = [];
+    pool = buildCandidates(excludeId, legendaryAllowed, []);
   }
 
-  const fallbackPool = allMessages.filter(
-    (message) => message.id !== excludeId
-  );
-  const pool = fallbackPool.length > 0 ? fallbackPool : allMessages;
+  if (pool.length === 0) {
+    pool = allMessages.filter((message) => message.id !== excludeId);
+  }
+
+  if (pool.length === 0) {
+    pool = allMessages;
+  }
+
   const picked = pool[Math.floor(Math.random() * pool.length)];
   const message = withDate(picked, now);
+
+  const nextSeenIds = [...new Set([...seenIds, message.id])];
+  writeSeenMessageIds(nextSeenIds);
 
   if (persist) persistSelection(message, now);
   return message;

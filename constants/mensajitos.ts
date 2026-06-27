@@ -21,6 +21,7 @@ export const MENSAJITOS_COPY = {
 
 export const SAVED_STORAGE_KEY = "ren-saved-mensajitos";
 export const LAST_MESSAGE_ID_KEY = "ren-last-mensajito-id";
+export const SEEN_MESSAGE_IDS_KEY = "ren-seen-mensajito-ids";
 export const LEGENDARY_DATE_KEY = "ren-last-legendary-mensajito";
 
 /** Días mínimos entre mensajes muy especiales. */

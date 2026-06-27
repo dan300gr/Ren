@@ -10,7 +10,7 @@ export const commonMessages = [
   "Me haces muy feliz.",
   "Pienso mucho en ti.",
   "Espero que hoy descanses un poquito.",
-  "Te extraño tantito.",
+  "Te extraño muchísimo mi amor.",
   "Qué suerte tengo de haberte encontrado.",
   "Me encanta saber que eres tú.",
   "No olvides lo increíble que eres.",
