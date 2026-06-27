@@ -81,7 +81,7 @@ export const HERO = {
   headline: "Para que siempre recuerdes que te amo, en cualquier momento del día.",
   highlight: "siempre",
   glassText:
-    "Este es un pequeño rincón hecho con todo mi amor para ti. Porque tú eres mi lugar favorito. ♡",
+    "Si algún día olvidas cuánto te amo, no intentes recordarlo tú sola. Ven aquí. Yo lo haré por ti mi amor.",
   scrollHint: "Desliza para descubrir",
   /** Ruta de imagen de fondo — null = blanco temporal */
   backgroundImage: "/cartas/WhatsApp Image 2026-06-26 at 16.21.58.jpeg" as string | null,
