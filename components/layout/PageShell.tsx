@@ -24,7 +24,7 @@ export function PageShell({
 }: PageShellProps) {
   return (
     <>
-      <AppShell activeNav={activeNav} theme="light">
+      <AppShell activeNav={activeNav}>
         <div className="flex-1 px-3 pb-3 md:px-5 md:pb-5 min-h-0">
           <motion.div
             initial={{ opacity: 0, y: 12 }}

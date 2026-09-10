@@ -27,13 +27,18 @@ interface SpotifyEmbedProps {
   onPlaybackUpdate?: (isPlaying: boolean) => void;
 }
 
-/** Reproductor embebido de Spotify controlable vía ref (iFrame API). */
+/**
+ * Reproductor embebido de Spotify controlable vía ref (iFrame API).
+ *
+ * createController reemplaza el elemento que recibe; por eso React solo
+ * gestiona un host vacío y Spotify opera sobre un hijo creado a mano.
+ */
 export const SpotifyEmbed = forwardRef<SpotifyEmbedHandle, SpotifyEmbedProps>(
   function SpotifyEmbed(
     { spotifyUrl, title, className, compact = false, onPlaybackUpdate },
     ref
   ) {
-    const containerRef = useRef<HTMLDivElement>(null);
+    const hostRef = useRef<HTMLDivElement>(null);
     const controllerRef = useRef<SpotifyEmbedController | null>(null);
     const playbackListenerRef = useRef<
       ((data: { isPaused?: boolean }) => void) | null
@@ -49,17 +54,21 @@ export const SpotifyEmbed = forwardRef<SpotifyEmbedHandle, SpotifyEmbedProps>(
     }));
 
     useEffect(() => {
-      const el = containerRef.current;
-      if (!el) return;
+      const host = hostRef.current;
+      if (!host) return;
 
       let cancelled = false;
       const initialUri = spotifyTrackUri(spotifyUrl);
+
+      // Nodo que Spotify puede reemplazar; React no lo gestiona.
+      const target = document.createElement("div");
+      host.replaceChildren(target);
 
       loadSpotifyIframeApi().then((IFrameAPI) => {
         if (cancelled) return;
 
         IFrameAPI.createController(
-          el,
+          target,
           {
             uri: initialUri,
             width: "100%",
@@ -89,6 +98,8 @@ export const SpotifyEmbed = forwardRef<SpotifyEmbedHandle, SpotifyEmbedProps>(
           );
         }
         controllerRef.current = null;
+        playbackListenerRef.current = null;
+        host.replaceChildren();
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps -- init una vez; loadUri en otro effect
     }, [compact]);
@@ -99,9 +110,10 @@ export const SpotifyEmbed = forwardRef<SpotifyEmbedHandle, SpotifyEmbedProps>(
 
     return (
       <div
-        ref={containerRef}
+        ref={hostRef}
         data-testid="embed-iframe"
         className={cn("w-full overflow-hidden", className)}
+        style={{ minHeight: compact ? 152 : 352 }}
         aria-label={`Reproducir ${title} en Spotify`}
       />
     );

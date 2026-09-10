@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
-/** true solo tras el primer montaje en cliente — evita hydration mismatch. */
+const subscribe = () => () => undefined;
+
+/** true solo tras hidratarse en el cliente. */
 export function useMounted(): boolean {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-  return mounted;
+  return useSyncExternalStore(subscribe, () => true, () => false);
 }

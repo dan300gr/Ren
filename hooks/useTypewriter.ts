@@ -22,7 +22,9 @@ export function useTypewriter(
   const onCompleteRef = useRef(onComplete);
   const finishedRef = useRef(false);
 
-  onCompleteRef.current = onComplete;
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
   useEffect(() => {
     if (finishedRef.current) return;
@@ -31,11 +33,13 @@ export function useTypewriter(
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (prefersReduced || speed <= 0) {
-      finishedRef.current = true;
-      setDisplayed(text);
-      setIsComplete(true);
-      onCompleteRef.current?.();
-      return;
+      const immediateId = window.setTimeout(() => {
+        finishedRef.current = true;
+        setDisplayed(text);
+        setIsComplete(true);
+        onCompleteRef.current?.();
+      }, 0);
+      return () => window.clearTimeout(immediateId);
     }
 
     let index = 0;

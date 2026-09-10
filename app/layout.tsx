@@ -22,7 +22,10 @@ const caveat = Caveat({
 });
 
 export const metadata: Metadata = {
-  title: SITE_TITLE,
+  title: {
+    default: SITE_TITLE,
+    template: "%s | Para Ren",
+  },
   description: SITE_DESCRIPTION,
   openGraph: {
     title: SITE_TITLE,
@@ -32,7 +35,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#FAF7F2",
+  themeColor: "#F4E9E5",
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
@@ -48,7 +51,7 @@ export default function RootLayout({
       lang="es"
       className={`${inter.variable} ${playfair.variable} ${caveat.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full">{children}</body>
     </html>
   );
 }

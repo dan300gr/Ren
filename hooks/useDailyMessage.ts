@@ -12,7 +12,8 @@ export function useDailyMessage() {
   const [message, setMessage] = useState<DailyMessage | null>(null);
 
   useEffect(() => {
-    setMessage(getRandomMessage());
+    const timer = window.setTimeout(() => setMessage(getRandomMessage()), 0);
+    return () => window.clearTimeout(timer);
   }, []);
 
   const refresh = useCallback(() => {

@@ -13,14 +13,18 @@ export function useMensajitos() {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    setMessage(getRandomMessage());
-    try {
-      const raw = localStorage.getItem(SAVED_STORAGE_KEY);
-      if (raw) setSavedIds(JSON.parse(raw) as number[]);
-    } catch {
-      /* ignore */
-    }
-    setHydrated(true);
+    const timer = window.setTimeout(() => {
+      setMessage(getRandomMessage());
+      try {
+        const raw = localStorage.getItem(SAVED_STORAGE_KEY);
+        if (raw) setSavedIds(JSON.parse(raw) as number[]);
+      } catch {
+        /* ignore */
+      }
+      setHydrated(true);
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, []);
 
   const refresh = useCallback(() => {

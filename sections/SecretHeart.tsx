@@ -26,10 +26,10 @@ export function SecretHeart() {
           setIsFound(true);
           setIsOpen(true);
         }}
-        className="fixed bottom-24 right-6 md:bottom-8 md:right-8 z-30 w-8 h-8 flex items-center justify-center text-rose-400 focus:outline-none focus-visible:opacity-80 focus-visible:ring-2 focus-visible:ring-rose-300/50 rounded-full"
+        className="fixed bottom-5 right-5 z-30 flex h-11 w-11 items-center justify-center rounded-full border border-border bg-background/90 text-accent shadow-[var(--shadow-card)] backdrop-blur-sm focus:outline-none focus-visible:opacity-100 md:bottom-7 md:right-7"
         aria-label="Descubrir secreto"
       >
-        <span className="text-lg">♡</span>
+            <span className="text-lg">♡</span>
       </motion.button>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -38,10 +38,7 @@ export function SecretHeart() {
             <DialogTitle>{secretLetter.title}</DialogTitle>
           </DialogHeader>
           <div
-            className="font-serif text-sm md:text-base text-warm-700/90 leading-relaxed whitespace-pre-line max-h-[60vh] overflow-y-auto"
-            style={{
-              background: "linear-gradient(180deg, #FFFDF8 0%, #F9F5EE 100%)",
-            }}
+            className="max-h-[60vh] overflow-y-auto whitespace-pre-line rounded-xl bg-paper font-serif text-sm leading-relaxed text-foreground-soft md:text-base"
           >
             <div className="p-6 rounded-xl border border-warm-200/30">
               {secretLetter.content}

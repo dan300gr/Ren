@@ -56,7 +56,7 @@ export function NosotrasExperience() {
     <>
       <div className={LIGHT_SHELL.outer}>
         <div className={cn(LIGHT_SHELL.inner)}>
-          <SectionSidebar activeId="nosotros" />
+          <SectionSidebar activeId="recuerdos" />
 
           <div className="flex-1 flex flex-col min-h-0 min-w-0 relative">
             <MobileSectionHeader
@@ -121,7 +121,7 @@ export function NosotrasExperience() {
         </div>
       </div>
 
-      {view === "gallery" && <MobileBottomNav activeId="nosotros" />}
+      {view === "gallery" && <MobileBottomNav activeId="recuerdos" />}
       <SecretHeart />
     </>
   );

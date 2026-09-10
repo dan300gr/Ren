@@ -63,7 +63,6 @@ export function VinylPlayerMobile({ player }: VinylPlayerMobileProps) {
 
           <div className="w-full max-w-md mb-8">
             <SpotifyEmbed
-              key={currentSong.spotifyUrl}
               spotifyUrl={currentSong.spotifyUrl}
               title={currentSong.title}
             />

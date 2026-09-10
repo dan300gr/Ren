@@ -15,23 +15,17 @@ export const WELCOME = {
   storageKey: "ren-welcome-seen",
 } as const;
 
-/** Activar cuando la sección Nosotras esté lista para publicar. */
-export const SHOW_NOSOTRAS_SECTION = false;
-
-const ALL_NAV_LINKS: NavLink[] = [
+export const NAV_LINKS: NavLink[] = [
   { href: "/", label: "Inicio", id: "inicio" },
   { href: "/cartas", label: "Cartas", id: "cartas" },
   { href: "/musica", label: "Música", id: "musica" },
-  { href: "/nosotros", label: "Nosotras", id: "nosotros" },
-  { href: "/mensajitos", label: "Mensajitos", id: "mensajito" },
+  { href: "/mensajitos", label: "Mensajitos", id: "mensajitos" },
+  { href: "/recuerdos", label: "Recuerdos", id: "recuerdos" },
 ];
 
-export const NAV_LINKS = SHOW_NOSOTRAS_SECTION
-  ? ALL_NAV_LINKS
-  : ALL_NAV_LINKS.filter((link) => link.id !== "nosotros");
-
-const ALL_FEATURE_CARDS: FeatureCardData[] = [
+export const FEATURE_CARDS: FeatureCardData[] = [
   {
+    id: "cartas",
     href: "/cartas",
     icon: "mail",
     title: "Cartas",
@@ -40,6 +34,7 @@ const ALL_FEATURE_CARDS: FeatureCardData[] = [
     preview: "cartas",
   },
   {
+    id: "musica",
     href: "/musica",
     icon: "music",
     title: "Nuestra música",
@@ -48,26 +43,24 @@ const ALL_FEATURE_CARDS: FeatureCardData[] = [
     preview: "musica",
   },
   {
-    href: "/nosotros",
-    icon: "camera",
-    title: "Nosotras",
-    subtitle: "Nuestros momentos favoritos",
-    description: "Pequeños recuerdos, grandes historias.",
-    preview: "nosotros",
-  },
-  {
+    id: "mensajitos",
     href: "/mensajitos",
     icon: "heart",
-    title: "Un mensajito",
+    title: "Mensajitos",
     subtitle: "Algo lindo para ti",
     description: "Cada día, un mensaje solo para ti.",
-    preview: "mensajito",
+    preview: "mensajitos",
+  },
+  {
+    id: "recuerdos",
+    href: "/recuerdos",
+    icon: "camera",
+    title: "Recuerdos",
+    subtitle: "Nuestros momentos favoritos",
+    description: "Pequeños recuerdos, grandes historias.",
+    preview: "recuerdos",
   },
 ];
-
-export const FEATURE_CARDS = SHOW_NOSOTRAS_SECTION
-  ? ALL_FEATURE_CARDS
-  : ALL_FEATURE_CARDS.filter((card) => card.preview !== "nosotros");
 
 /** Contenedor exterior/interior — misma paleta que el inicio. */
 export const LIGHT_SHELL = {
@@ -82,7 +75,6 @@ export const HERO = {
   highlight: "siempre",
   glassText:
     "Si algún día olvidas cuánto te amo, no intentes recordarlo tú sola. Ven aquí. Yo lo haré por ti mi amor.",
-  scrollHint: "Desliza para descubrir",
   /** Ruta de imagen de fondo — null = blanco temporal */
-  backgroundImage: "/cartas/WhatsApp Image 2026-06-26 at 16.21.58.jpeg" as string | null,
+  backgroundImage: "/images/home/hero-together.webp" as string | null,
 } as const;

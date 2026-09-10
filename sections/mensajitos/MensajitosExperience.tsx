@@ -1,40 +1,28 @@
-"use client";
-
-import { DailyHeroDesktop } from "@/components/mensajitos/DailyHeroDesktop";
-import { DailyHeroMobile } from "@/components/mensajitos/DailyHeroMobile";
-import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
-import { MobileSectionHeader } from "@/components/layout/MobileSectionHeader";
-import { SectionSidebar } from "@/components/layout/SectionSidebar";
+import { AppShell } from "@/components/layout/AppShell";
+import { Container } from "@/components/ui/Container";
+import { SectionIntro } from "@/components/shared/SectionIntro";
+import { MessagesExperience } from "@/components/mensajitos/MessagesExperience";
 import { SecretHeart } from "@/sections/SecretHeart";
-import { useMensajitos } from "@/hooks/useMensajitos";
-import { LIGHT_SHELL } from "@/constants";
-import { cn } from "@/lib/utils";
 
-/** Experiencia completa de la sección Mensajitos. */
 export function MensajitosExperience() {
-  const { message, refresh } = useMensajitos();
-
   return (
     <>
-      <div className={LIGHT_SHELL.outer}>
-        <div className={cn(LIGHT_SHELL.inner)}>
-          <SectionSidebar activeId="mensajito" />
-
-          <div className="flex-1 flex flex-col min-h-0 min-w-0 relative">
-            <MobileSectionHeader />
-
-            <div className="hidden lg:flex flex-1 flex-col min-h-0 overflow-y-auto">
-              <DailyHeroDesktop message={message} onRefresh={refresh} />
-            </div>
-
-            <div className="lg:hidden flex-1 flex flex-col min-h-0">
-              <DailyHeroMobile message={message} onRefresh={refresh} />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <MobileBottomNav activeId="mensajito" />
+      <AppShell activeNav="mensajitos">
+        <Container className="py-10 sm:py-14 lg:py-18">
+          <SectionIntro
+            eyebrow="Algo lindo para ti"
+            title={
+              <>
+                Mensajito del{" "}
+                <em className="font-handwriting font-normal text-accent">día</em>{" "}
+                <span className="text-accent">♡</span>
+              </>
+            }
+            description="Un pequeño recordatorio de cuánto te amo, para releer cuando necesites sentirme cerquita."
+          />
+          <MessagesExperience />
+        </Container>
+      </AppShell>
       <SecretHeart />
     </>
   );

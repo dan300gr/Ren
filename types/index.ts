@@ -1,4 +1,4 @@
-export type NavId = "inicio" | "cartas" | "musica" | "nosotros" | "mensajito";
+export type NavId = "inicio" | "cartas" | "musica" | "mensajitos" | "recuerdos";
 
 export interface NavLink {
   href: string;
@@ -7,12 +7,13 @@ export interface NavLink {
 }
 
 export interface FeatureCardData {
+  id: Exclude<NavId, "inicio">;
   href: string;
   icon: "mail" | "music" | "camera" | "heart";
   title: string;
   subtitle: string;
   description: string;
-  preview: "cartas" | "musica" | "nosotros" | "mensajito";
+  preview: "cartas" | "musica" | "recuerdos" | "mensajitos";
 }
 
 export interface Letter {

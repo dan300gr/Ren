@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { MessageSlipCard } from "@/components/mensajitos/MessagePaper";
 import { MENSAJITOS_COPY } from "@/constants/mensajitos";

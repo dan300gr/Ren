@@ -16,8 +16,8 @@ const ICONS: Record<NavId, React.ComponentType<{ className?: string; strokeWidth
   inicio: Home,
   cartas: Mail,
   musica: Music,
-  nosotros: Camera,
-  mensajito: Sparkles,
+  recuerdos: Camera,
+  mensajitos: Sparkles,
 };
 
 interface MobileBottomNavProps {

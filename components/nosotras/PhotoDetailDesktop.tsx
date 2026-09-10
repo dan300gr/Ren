@@ -9,7 +9,6 @@ import {
 } from "lucide-react";
 import { PolaroidCard } from "@/components/nosotras/PolaroidCard";
 import { NOSOTRAS_COPY } from "@/constants/nosotras";
-import { photos } from "@/data/photos";
 import type { Photo } from "@/types";
 
 interface PhotoDetailDesktopProps {
