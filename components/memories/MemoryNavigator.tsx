@@ -13,7 +13,8 @@ export function MemoryNavigator({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const touchStart = useRef<number | null>(null);
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const ignoreSwipe = useRef(false);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -31,16 +32,42 @@ export function MemoryNavigator({
   return (
     <div
       onTouchStart={(event) => {
-        touchStart.current = event.touches[0]?.clientX ?? null;
+        const target = event.target as HTMLElement | null;
+        ignoreSwipe.current = Boolean(
+          target?.closest("a, button, input, textarea, select, [contenteditable='true'], [data-no-swipe]")
+        );
+
+        if (ignoreSwipe.current) {
+          touchStart.current = null;
+          return;
+        }
+
+        const touch = event.touches[0];
+        touchStart.current = touch ? { x: touch.clientX, y: touch.clientY } : null;
       }}
       onTouchEnd={(event) => {
-        if (touchStart.current === null) return;
-        const end = event.changedTouches[0]?.clientX;
-        if (end === undefined) return;
-        const distance = end - touchStart.current;
+        const start = touchStart.current;
         touchStart.current = null;
-        if (Math.abs(distance) < 60) return;
-        router.push(distance > 0 ? previousHref : nextHref);
+        if (!start || ignoreSwipe.current) {
+          ignoreSwipe.current = false;
+          return;
+        }
+
+        const end = event.changedTouches[0];
+        if (!end) return;
+
+        const deltaX = end.clientX - start.x;
+        const deltaY = end.clientY - start.y;
+        const horizontalSwipe = Math.abs(deltaX) >= 70 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5;
+
+        if (!horizontalSwipe) return;
+
+        router.push(deltaX > 0 ? previousHref : nextHref);
+        ignoreSwipe.current = false;
+      }}
+      onTouchCancel={() => {
+        touchStart.current = null;
+        ignoreSwipe.current = false;
       }}
     >
       <span className="sr-only">Usa las flechas del teclado o desliza la fotografía para cambiar de recuerdo.</span>

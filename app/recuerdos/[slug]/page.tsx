@@ -153,7 +153,7 @@ export default async function MemoryDetailPage({
               Ver todos <ArrowRight className="h-4 w-4" aria-hidden />
             </Link>
           </div>
-          <div className="mt-5 flex snap-x gap-3 overflow-x-auto pb-3">
+          <div className="mt-5 flex snap-x gap-3 overflow-x-auto pb-3" data-no-swipe>
             {rail.map((item) => (
               <Link
                 key={item.id}
