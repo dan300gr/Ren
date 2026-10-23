@@ -8,7 +8,7 @@ import { SecretHeart } from "@/sections/SecretHeart";
 
 export const metadata: Metadata = {
   title: "Recuerdos",
-  description: "Nuestro álbum de fotos, momentos y pequeñas notas.",
+  description: "Nuestro álbum de fotos, videos, momentos y pequeñas notas.",
 };
 
 export default function RecuerdosPage() {
@@ -20,7 +20,7 @@ export default function RecuerdosPage() {
             <SectionIntro
               eyebrow="Un álbum de nosotras"
               title={<>Nuestros <em className="font-handwriting font-normal text-accent">recuerdos</em> <span className="text-accent">♡</span></>}
-              description="Cada foto guarda un momento especial. Algunas también tienen una notita; todas son pequeños pedazos de nuestra historia."
+              description="Cada foto y cada video guardan un momento especial. Algunos también tienen una notita; todos son pequeños pedazos de nuestra historia."
             />
             <PaperNote className="max-w-sm lg:justify-self-end">
               Las mejores cosas de la vida son aún más lindas cuando las comparto contigo. ♡

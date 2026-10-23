@@ -20,7 +20,7 @@ export function MemoryNavigator({
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.defaultPrevented) return;
       const target = event.target as HTMLElement | null;
-      if (target?.matches("input, textarea, select, [contenteditable='true']")) return;
+      if (target?.matches("input, textarea, select, video, [contenteditable='true']")) return;
       if (event.key === "ArrowLeft") router.push(previousHref);
       if (event.key === "ArrowRight") router.push(nextHref);
     };
@@ -34,7 +34,7 @@ export function MemoryNavigator({
       onTouchStart={(event) => {
         const target = event.target as HTMLElement | null;
         ignoreSwipe.current = Boolean(
-          target?.closest("a, button, input, textarea, select, [contenteditable='true'], [data-no-swipe]")
+          target?.closest("a, button, input, textarea, select, video, [contenteditable='true'], [data-no-swipe]")
         );
 
         if (ignoreSwipe.current) {

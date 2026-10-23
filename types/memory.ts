@@ -8,6 +8,8 @@ export interface Memory {
   id: string;
   slug: string;
   image: string;
+  /** MP4 opcional; image se usa como portada del video. */
+  video?: string;
   alt: string;
   width: number;
   height: number;

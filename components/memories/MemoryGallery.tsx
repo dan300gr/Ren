@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Grid2X2, Heart, MapPin, MessageSquareText, Sparkles } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Grid2X2, Heart, MapPin, MessageSquareText, Play, Sparkles } from "lucide-react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { memories, memoryCategoryLabels } from "@/data/memories";
 import type { MemoryCategory } from "@/types/memory";
 import { cn } from "@/lib/utils";
@@ -22,6 +22,7 @@ const filters: Array<{ id: Filter; label: string; icon: typeof Heart }> = [
 export function MemoryGallery() {
   const [activeFilter, setActiveFilter] = useState<Filter>("all");
   const buttonRefs = useRef<Partial<Record<Filter, HTMLButtonElement | null>>>({});
+  const gridRef = useRef<HTMLDivElement>(null);
 
   const visibleMemories = useMemo(() => {
     if (activeFilter === "all") return memories;
@@ -30,6 +31,32 @@ export function MemoryGallery() {
     }
     return memories.filter((memory) => memory.category === activeFilter);
   }, [activeFilter]);
+
+  useLayoutEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+
+    // Preserve the staggered album design while reading in folder order across the page.
+    grid.dataset.ordered = "true";
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>("article > a"));
+    const measure = (card: HTMLElement) => {
+      const styles = window.getComputedStyle(grid);
+      const gap = Number.parseFloat(styles.columnGap) || 0;
+      const rowHeight = Number.parseFloat(styles.gridAutoRows) || 4;
+      const article = card.parentElement;
+      if (article) {
+        article.style.gridRowEnd = `span ${Math.max(1, Math.ceil((card.getBoundingClientRect().height + gap) / rowHeight))}`;
+      }
+    };
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) measure(entry.target as HTMLElement);
+    });
+    for (const card of cards) {
+      measure(card);
+      observer.observe(card);
+    }
+    return () => observer.disconnect();
+  }, [visibleMemories]);
 
   useEffect(() => {
     const button = buttonRefs.current[activeFilter];
@@ -75,13 +102,13 @@ export function MemoryGallery() {
       </div>
 
       {visibleMemories.length > 0 ? (
-        <div className="memory-grid mt-5" aria-live="polite">
+        <div ref={gridRef} className="memory-grid mt-5" aria-live="polite">
           {visibleMemories.map((memory) => (
             <article key={memory.id}>
               <Link
                 href={`/recuerdos/${memory.slug}`}
                 className="group block overflow-hidden rounded-[var(--radius-md)] border border-border bg-surface shadow-[var(--shadow-card)] transition-all hover:-translate-y-0.5 hover:border-border-strong hover:shadow-[var(--shadow-raised)]"
-                aria-label={`Abrir recuerdo${memory.title ? `: ${memory.title}` : ""}`}
+                aria-label={`Abrir ${memory.video ? "video" : "recuerdo"}: ${memory.title ?? memory.alt}`}
               >
                 <div className="relative overflow-hidden bg-surface-soft">
                   <Image
@@ -92,6 +119,12 @@ export function MemoryGallery() {
                     className="h-auto w-full transition-transform duration-500 group-hover:scale-[1.015]"
                     sizes="(max-width: 360px) calc(100vw - 2.5rem), (max-width: 767px) 46vw, (max-width: 1279px) 30vw, 20vw"
                   />
+                  {memory.video && (
+                    <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-foreground/75 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-sm">
+                      <Play className="h-3.5 w-3.5" fill="currentColor" aria-hidden />
+                      Video
+                    </span>
+                  )}
                   {memory.favorite && (
                     <span className="absolute right-2.5 top-2.5 flex h-9 w-9 items-center justify-center rounded-full bg-background/92 text-accent shadow-sm backdrop-blur-sm" aria-label="Recuerdo favorito">
                       <Heart className="h-4 w-4" fill="currentColor" aria-hidden />

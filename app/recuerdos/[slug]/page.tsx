@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight, CalendarDays, Heart, MapPin } from "lucide-react";
+import { ArrowLeft, ArrowRight, CalendarDays, Heart, MapPin, Play } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
 import { Container } from "@/components/ui/Container";
 import { MemoryNavigator } from "@/components/memories/MemoryNavigator";
+import { DraggableMemoryRail } from "@/components/memories/DraggableMemoryRail";
 import { PaperNote } from "@/components/shared/PaperNote";
 import {
   getMemoryBySlug,
@@ -69,15 +70,33 @@ export default async function MemoryDetailPage({
         <MemoryNavigator previousHref={previousHref} nextHref={nextHref}>
           <article className="mt-5 grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1.25fr)_minmax(20rem,0.75fr)] lg:items-start">
             <figure className="relative flex min-w-0 items-center justify-center overflow-hidden rounded-[var(--radius-lg)] border border-border bg-foreground shadow-[var(--shadow-card)]">
-              <Image
-                src={memory.image}
-                alt={memory.alt}
-                width={memory.width}
-                height={memory.height}
-                priority
-                className="h-auto max-h-[78vh] w-full object-contain"
-                sizes="(max-width: 1024px) calc(100vw - 3rem), 65vw"
-              />
+              {memory.video ? (
+                <video
+                  controls
+                  playsInline
+                  preload="none"
+                  poster={memory.image}
+                  width={memory.width}
+                  height={memory.height}
+                  aria-label={memory.alt}
+                  className="h-auto max-h-[78vh] w-full object-contain"
+                  style={{ aspectRatio: `${memory.width} / ${memory.height}` }}
+                >
+                  <source src={memory.video} type="video/mp4" />
+                  Tu navegador no puede reproducir este video.{" "}
+                  <a href={memory.video}>Abrir el video</a>.
+                </video>
+              ) : (
+                <Image
+                  src={memory.image}
+                  alt={memory.alt}
+                  width={memory.width}
+                  height={memory.height}
+                  priority
+                  className="h-auto max-h-[78vh] w-full object-contain"
+                  sizes="(max-width: 1024px) calc(100vw - 3rem), 65vw"
+                />
+              )}
               {memory.favorite && (
                 <span className="absolute right-3 top-3 flex h-11 w-11 items-center justify-center rounded-full bg-background/92 text-accent shadow-sm backdrop-blur-sm" aria-label="Recuerdo favorito">
                   <Heart className="h-5 w-5" fill="currentColor" aria-hidden />
@@ -89,8 +108,8 @@ export default async function MemoryDetailPage({
               <p className="text-[0.68rem] font-semibold uppercase tracking-[0.25em] text-accent-hover">
                 Un pequeño recuerdo
               </p>
-              <h1 className="mt-3 font-serif text-[clamp(2rem,6vw,3.6rem)] leading-[1.02] tracking-[-0.04em] text-foreground">
-                {memory.title ?? "Un momento de nosotras"} <span className="text-accent">♡</span>
+              <h1 className="mt-3 font-serif text-[clamp(1.85rem,5.6vw,3.35rem)] leading-[1.02] tracking-[-0.04em] text-foreground">
+                {memory.title ?? "Un momento de nosotras"}
               </h1>
 
               {(memory.date || memory.location || memory.category) && (
@@ -153,18 +172,23 @@ export default async function MemoryDetailPage({
               Ver todos <ArrowRight className="h-4 w-4" aria-hidden />
             </Link>
           </div>
-          <div className="mt-5 flex snap-x gap-3 overflow-x-auto pb-3" data-no-swipe>
+          <DraggableMemoryRail>
             {rail.map((item) => (
               <Link
                 key={item.id}
                 href={`/recuerdos/${item.slug}`}
                 className="relative aspect-[4/3] w-36 shrink-0 snap-start overflow-hidden rounded-[var(--radius-md)] border border-border bg-surface sm:w-44"
-                aria-label={`Abrir ${item.title ?? "otro recuerdo"}`}
+                aria-label={`Abrir ${item.video ? "video" : "recuerdo"}: ${item.title ?? item.alt}`}
               >
                 <Image src={item.image} alt="" fill className="object-cover" sizes="176px" />
+                {item.video && (
+                  <span className="absolute bottom-2 left-2 rounded-full bg-foreground/75 p-2 text-white" aria-hidden>
+                    <Play className="h-3.5 w-3.5" fill="currentColor" />
+                  </span>
+                )}
               </Link>
             ))}
-          </div>
+          </DraggableMemoryRail>
         </section>
       </Container>
     </AppShell>

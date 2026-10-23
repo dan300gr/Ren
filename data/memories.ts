@@ -1,4 +1,5 @@
 import type { Memory, MemoryCategory } from "@/types/memory";
+import { folderMemories } from "@/data/recuerdos-r";
 
 export const memoryCategoryLabels: Record<MemoryCategory, string> = {
   citas: "Citas",
@@ -8,6 +9,7 @@ export const memoryCategoryLabels: Record<MemoryCategory, string> = {
 };
 
 export const memories: Memory[] = [
+  ...folderMemories.filter((memory) => memory.id !== "album-r-photo-42"),
   {
     id: "memory-01",
     slug: "nuestro-primer-mundial",
@@ -353,6 +355,7 @@ export const memories: Memory[] = [
     category: "dias-especiales",
     favorite: true,
   },
+  ...folderMemories.filter((memory) => memory.id === "album-r-photo-42"),
 ];
 
 export function getMemoryBySlug(slug: string): Memory | undefined {
